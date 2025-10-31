@@ -1,29 +1,37 @@
-// Sample Recipes Data with All Categories
-let currentUser = null;
-let allRecipes = [];
-let filteredRecipes = [];
-let currentCategory = "all";
 
-const ADMIN_EMAIL = "rehan94@gmail.com";
-const ADMIN_PASSWORD = "coderrehan";
+        let currentUser = null;
+        let allRecipes = [];
+        let filteredRecipes = [];
+        let currentCategory = 'all';
+        const ADMIN_EMAIL = 'rehan94@gmail.com';
+         const ADMIN_PASSWORD_HASH = 'c8e3d2f1a4b5e6d7c8f9a0b1c2d3e4f5';
+        
+        function simpleHash(str) {
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                const char = str.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash;
+            }
+            return Math.abs(hash).toString(16);
+        }
 
-const categories = [
-  { name: "all", emoji: "📚", label: "All Recipes" },
-  { name: "Italian", emoji: "🍝", label: "Italian" },
-  { name: "Indian", emoji: "🍛", label: "Indian" },
-  { name: "Chinese", emoji: "🥢", label: "Chinese" },
-  { name: "Mexican", emoji: "🌮", label: "Mexican" },
-  { name: "Japanese", emoji: "🍱", label: "Japanese" },
-  { name: "Thai", emoji: "🍜", label: "Thai" },
-  { name: "American", emoji: "🍔", label: "American" },
-  { name: "French", emoji: "🥖", label: "French" },
-  { name: "Greek", emoji: "🥗", label: "Greek" },
-  { name: "Korean", emoji: "🍲", label: "Korean" },
-  { name: "Desserts", emoji: "🍰", label: "Desserts" },
-  { name: "Healthy", emoji: "🥑", label: "Healthy" },
-  { name: "Breakfast", emoji: "🍳", label: "Breakfast" }
-];
-
+        const categories = [
+            { name: 'all', emoji: '🍽️', label: 'All Recipes' },
+            { name: 'Italian', emoji: '🍝', label: 'Italian' },
+            { name: 'Indian', emoji: '🍛', label: 'Indian' },
+            { name: 'Chinese', emoji: '🍲', label: 'Chinese' },
+            { name: 'Mexican', emoji: '🌮', label: 'Mexican' },
+            { name: 'Japanese', emoji: '🍱', label: 'Japanese' },
+            { name: 'Thai', emoji: '🍜', label: 'Thai' },
+            { name: 'American', emoji: '🍔', label: 'American' },
+            { name: 'French', emoji: '🥐', label: 'French' },
+            { name: 'Greek', emoji: '🥙', label: 'Greek' },
+            { name: 'Korean', emoji: '🍲', label: 'Korean' },
+            { name: 'Desserts', emoji: '🍰', label: 'Desserts' },
+            { name: 'Healthy', emoji: '🥗', label: 'Healthy' },
+            { name: 'Breakfast', emoji: '🥞', label: 'Breakfast' }
+        ];
 const sampleRecipes = [
   
   {"id":"it-1", "name":"Margherita Pizza", "category":"Italian", "image":"https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=500", "time":"25 min", "ingredients":["Pizza dough","Tomato sauce","Mozzarella"], "instructions":["Roll dough","Add sauce & cheese","Bake"], "addedBy":"system"},
@@ -171,498 +179,476 @@ const sampleRecipes = [
 
 ];
 
-// Elements
-const elements = {
-  loginPage: document.getElementById("loginPage"),
-  signupPage: document.getElementById("signupPage"),
-  mainApp: document.getElementById("mainApp"),
-  splashScreen: document.getElementById("splashScreen"),
-  loginForm: document.getElementById("loginForm"),
-  signupForm: document.getElementById("signupForm"),
-  loginEmail: document.getElementById("loginEmail"),
-  loginPassword: document.getElementById("loginPassword"),
-  loginError: document.getElementById("loginError"),
-  signupName: document.getElementById("signupName"),
-  signupEmail: document.getElementById("signupEmail"),
-  signupPassword: document.getElementById("signupPassword"),
-  signupError: document.getElementById("signupError"),
-  signupSuccess: document.getElementById("signupSuccess"),
-  showSignupLink: document.getElementById("showSignupLink"),
-  showLoginLink: document.getElementById("showLoginLink"),
-  userAvatar: document.getElementById("userAvatar"),
-  userName: document.getElementById("userName"),
-  logoutBtn: document.getElementById("logoutBtn"),
-  searchInput: document.getElementById("searchInput"),
-  searchBtn: document.getElementById("searchBtn"),
-  categoriesContainer: document.getElementById("categories"),
-  searchHistory: document.getElementById("searchHistory"),
-  historyItems: document.getElementById("historyItems"),
-  recipesGrid: document.getElementById("recipesGrid"),
-  noRecipes: document.getElementById("noRecipes"),
-  addRecipeBtn: document.getElementById("addRecipeBtn"),
-  recipeModal: document.getElementById("recipeModal"),
-  closeRecipeModal: document.getElementById("closeRecipeModal"),
-  modalImage: document.getElementById("modalImage"),
-  modalTitle: document.getElementById("modalTitle"),
-  modalCategory: document.getElementById("modalCategory"),
-  modalTime: document.getElementById("modalTime"),
-  modalIngredients: document.getElementById("modalIngredients"),
-  modalInstructions: document.getElementById("modalInstructions"),
-  addRecipeModal: document.getElementById("addRecipeModal"),
-  closeAddModal: document.getElementById("closeAddModal"),
-  addRecipeForm: document.getElementById("addRecipeForm"),
-  newRecipeCategory: document.getElementById("newRecipeCategory")
-};
 
-// ✅ FIXED: Save recipes permanently to localStorage
-function saveRecipes() {
-  localStorage.setItem('recipeMasterRecipes', JSON.stringify(allRecipes));
-  updateAdminStats();
-  console.log('✅ Recipes saved:', allRecipes.length);
-}
 
-// ✅ FIXED: Load recipes from localStorage or use sample data
-function loadRecipes() {
-  const stored = localStorage.getItem('recipeMasterRecipes');
-  if (stored) {
-    allRecipes = JSON.parse(stored);
-    console.log('📂 Loaded recipes from localStorage:', allRecipes.length);
-  } else {
-    allRecipes = [...sampleRecipes];
-    saveRecipes();
-    console.log('🆕 Initialized with sample recipes:', allRecipes.length);
-  }
-}
 
-// Load/Save Users
-function loadAllData() {
-  const users = JSON.parse(localStorage.getItem("recipeMasterUsers")) || {};
-  return { users };
-}
+        const elements = {
+            loginPage: document.getElementById('loginPage'),
+            signupPage: document.getElementById('signupPage'),
+            mainApp: document.getElementById('mainApp'),
+            splashScreen: document.getElementById('splashScreen'),
+            loginForm: document.getElementById('loginForm'),
+            signupForm: document.getElementById('signupForm'),
+            loginEmail: document.getElementById('loginEmail'),
+            loginPassword: document.getElementById('loginPassword'),
+            loginError: document.getElementById('loginError'),
+            signupName: document.getElementById('signupName'),
+            signupEmail: document.getElementById('signupEmail'),
+            signupPassword: document.getElementById('signupPassword'),
+            signupError: document.getElementById('signupError'),
+            signupSuccess: document.getElementById('signupSuccess'),
+            showSignupLink: document.getElementById('showSignupLink'),
+            showLoginLink: document.getElementById('showLoginLink'),
+            userAvatar: document.getElementById('userAvatar'),
+            userName: document.getElementById('userName'),
+            logoutBtn: document.getElementById('logoutBtn'),
+            searchInput: document.getElementById('searchInput'),
+            searchBtn: document.getElementById('searchBtn'),
+            categoriesContainer: document.getElementById('categories'),
+            searchHistory: document.getElementById('searchHistory'),
+            historyItems: document.getElementById('historyItems'),
+            recipesGrid: document.getElementById('recipesGrid'),
+            noRecipes: document.getElementById('noRecipes'),
+            addRecipeBtn: document.getElementById('addRecipeBtn'),
+            recipeModal: document.getElementById('recipeModal'),
+            closeRecipeModal: document.getElementById('closeRecipeModal'),
+            modalImage: document.getElementById('modalImage'),
+            modalTitle: document.getElementById('modalTitle'),
+            modalCategory: document.getElementById('modalCategory'),
+            modalTime: document.getElementById('modalTime'),
+            modalIngredients: document.getElementById('modalIngredients'),
+            modalInstructions: document.getElementById('modalInstructions'),
+            addRecipeModal: document.getElementById('addRecipeModal'),
+            closeAddModal: document.getElementById('closeAddModal'),
+            addRecipeForm: document.getElementById('addRecipeForm'),
+            newRecipeCategory: document.getElementById('newRecipeCategory')
+        };
 
-function saveUserData() {
-  const data = loadAllData();
-  data.users[currentUser.email] = currentUser;
-  localStorage.setItem("recipeMasterUsers", JSON.stringify(data.users));
-}
+        function downloadJSON() {
+            const dataBlob = new Blob([JSON.stringify(loadAllData(), null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'recipe-master-data.json';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
 
-// Tracking
-function saveTracking(type, data) {
-  let tracking = JSON.parse(localStorage.getItem('recipeTracking')) || {
-    signups: [],
-    logins: [],
-    searches: []
-  };
+        function loadAllData() {
+            const users = JSON.parse(localStorage.getItem('recipeMasterUsers')) || {};
+            const recipes = JSON.parse(localStorage.getItem('recipeMasterRecipes')) || [];
+            return { users, recipes };
+        }
 
-  const timestamp = new Date().toISOString();
+        function saveData() {
+            const data = loadAllData();
+            data.users[currentUser.email] = currentUser;
+            localStorage.setItem('recipeMasterUsers', JSON.stringify(data.users));
+        }
 
-  if (type === 'SIGNUP') {
-    tracking.signups.push({
-      email: data.email,
-      name: data.name,
-      timestamp
-    });
-  } else if (type === 'LOGIN') {
-    tracking.logins.push({
-      email: data.email,
-      timestamp
-    });
-  } else if (type === 'SEARCH') {
-    tracking.searches.push({
-      email: currentUser?.email,
-      query: data.query,
-      timestamp
-    });
-  }
+        function saveRecipes() {
+            const userRecipes = allRecipes.filter(r => r.addedBy === currentUser.email);
+            const data = loadAllData();
+            const otherRecipes = data.recipes.filter(r => r.addedBy !== currentUser.email);
+            data.recipes = [...otherRecipes, ...userRecipes];
+            localStorage.setItem('recipeMasterRecipes', JSON.stringify(data.recipes));
+        }
 
-  localStorage.setItem('recipeTracking', JSON.stringify(tracking));
-}
+        function loadUserData() {
+            const data = loadAllData();
+            const user = data.users[currentUser.email];
+            if (user) {
+                currentUser.searchHistory = user.searchHistory || [];
+            }
+        }
 
-// Login
-function handleLogin(e) {
-  e.preventDefault();
-  const email = elements.loginEmail.value;
-  const password = elements.loginPassword.value;
-  const data = loadAllData();
+        function loadRecipes() {
+            const data = loadAllData();
+            const userRecipes = data.recipes.filter(r => r.addedBy === currentUser.email);
+            const systemRecipes = sampleRecipes.filter(r => r.addedBy === 'system');
+            allRecipes = [...userRecipes, ...systemRecipes];
+        }
 
-  if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
-    if (!data.users[email]) {
-      data.users[email] = {
-        name: "Admin",
-        email: ADMIN_EMAIL,
-        password: ADMIN_PASSWORD,
-        searchHistory: [],
-        isAdmin: true
-      };
-      localStorage.setItem("recipeMasterUsers", JSON.stringify(data.users));
-    }
-    currentUser = data.users[email];
-    currentUser.isAdmin = true;
-    saveTracking('LOGIN', { email });
-    initApp();
-    return;
-  }
+        function showLoginError(message) {
+            elements.loginError.textContent = message;
+            elements.loginError.style.display = 'block';
+        }
 
-  const user = data.users[email];
-  if (user && user.password === password) {
-    currentUser = user;
-    saveTracking('LOGIN', { email });
-    initApp();
-  } else {
-    showLoginError("Invalid email or password.");
-  }
-}
+        function showSignupError(message) {
+            elements.signupError.textContent = message;
+            elements.signupError.style.display = 'block';
+        }
 
-// Signup
-function handleSignup(e) {
-  e.preventDefault();
-  const name = elements.signupName.value;
-  const email = elements.signupEmail.value;
-  const password = elements.signupPassword.value;
+        function showSignupSuccess(message) {
+            elements.signupSuccess.textContent = message;
+            elements.signupSuccess.style.display = 'block';
+        }
 
-  elements.signupError.style.display = "none";
-  elements.signupSuccess.style.display = "none";
+        function handleLogin(e) {
+            e.preventDefault();
+            const email = elements.loginEmail.value;
+            const password = elements.loginPassword.value;
+            const data = loadAllData();
 
-  if (password.length < 6) {
-    showSignupError("Password must be at least 6 characters.");
-    return;
-  }
+            if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+                if (!data.users[email]) {
+                    data.users[email] = { 
+                        name: 'Admin', 
+                        email: ADMIN_EMAIL, 
+                        password: ADMIN_PASSWORD, 
+                        searchHistory: [],
+                        isAdmin: true 
+                    };
+                    localStorage.setItem('recipeMasterUsers', JSON.stringify(data.users));
+                }
+                currentUser = data.users[email];
+                currentUser.isAdmin = true;
+                initApp();
+                return;
+            }
 
-  const data = loadAllData();
-  if (data.users[email]) {
-    showSignupError("An account with this email already exists.");
-    return;
-  }
+            const user = data.users[email];
+            if (user && user.password === password) {
+                currentUser = user;
+                initApp();
+            } else {
+                showLoginError('Invalid email or password.');
+            }
+        }
 
-  data.users[email] = { name, email, password, searchHistory: [] };
-  localStorage.setItem("recipeMasterUsers", JSON.stringify(data.users));
-  
-  saveTracking('SIGNUP', { email, name });
-  
-  showSignupSuccess("Account created! Please log in.");
-  elements.signupForm.reset();
-}
+        function handleSignup(e) {
+            e.preventDefault();
+            const name = elements.signupName.value;
+            const email = elements.signupEmail.value;
+            const password = elements.signupPassword.value;
 
-// Logout
-function logout() {
-  if (currentUser) {
-    saveUserData();
-  }
-  currentUser = null;
-  elements.mainApp.style.display = "none";
-  elements.loginPage.style.display = "flex";
-}
+            elements.signupError.style.display = 'none';
+            elements.signupSuccess.style.display = 'none';
 
-// Init App
-function initApp() {
-  elements.loginPage.style.display = "none";
-  elements.signupPage.style.display = "none";
-  elements.mainApp.style.display = "block";
+            if (password.length < 6) {
+                showSignupError('Password must be at least 6 characters.');
+                return;
+            }
 
-  elements.userName.textContent = currentUser.name;
-  const initials = currentUser.name.split(" ").map(n => n[0]).join("").toUpperCase();
-  elements.userAvatar.textContent = initials;
+            const data = loadAllData();
+            if (data.users[email]) {
+                showSignupError('An account with this email already exists.');
+                return;
+            }
 
-  if (currentUser.isAdmin || currentUser.email === ADMIN_EMAIL) {
-    document.getElementById("adminBadge").style.display = "inline-block";
-    document.getElementById("adminControls").style.display = "flex";
-  }
+            data.users[email] = { name, email, password, searchHistory: [] };
+            localStorage.setItem('recipeMasterUsers', JSON.stringify(data.users));
+            
+            showSignupSuccess('Account created! Please log in.');
+            elements.signupForm.reset();
+        }
 
-  loadRecipes();
-  renderCategories();
-  populateAddRecipeCategories();
-  performSearch();
-  renderSearchHistory();
-  updateAdminStats();
-}
+        function logout() {
+            if (currentUser) {
+                saveData();
+                saveRecipes();
+            }
+            currentUser = null;
+            elements.mainApp.style.display = 'none';
+            elements.loginPage.style.display = 'flex';
+        }
 
-// Update Admin Stats
-function updateAdminStats() {
-  if (currentUser && (currentUser.isAdmin || currentUser.email === ADMIN_EMAIL)) {
-    document.getElementById("totalRecipes").textContent = allRecipes.length;
-    document.getElementById("userRecipes").textContent = allRecipes.filter(r => r.addedBy !== "system").length;
-    document.getElementById("systemRecipes").textContent = allRecipes.filter(r => r.addedBy === "system").length;
-  }
-}
+        function initApp() {
+            elements.loginPage.style.display = 'none';
+            elements.signupPage.style.display = 'none';
+            elements.mainApp.style.display = 'block';
 
-// Render Categories
-function renderCategories() {
-  elements.categoriesContainer.innerHTML = "";
-  const sidebarCategoriesEl = document.getElementById("sidebarCategories");
-  sidebarCategoriesEl.innerHTML = "";
+            elements.userName.textContent = currentUser.name;
+            const initials = currentUser.name.split(' ').map(n => n[0]).join('').toUpperCase();
+            elements.userAvatar.textContent = initials;
 
-  categories.forEach(cat => {
-    const btn = document.createElement("button");
-    btn.className = "category-btn";
-    btn.innerHTML = `${cat.emoji} ${cat.label}`;
-    btn.dataset.category = cat.name;
-    if (cat.name === currentCategory) btn.classList.add("active");
-    btn.addEventListener("click", () => filterByCategory(cat.name));
-    elements.categoriesContainer.appendChild(btn);
+            if (currentUser.isAdmin || currentUser.email === ADMIN_EMAIL) {
+                document.getElementById('adminBadge').style.display = 'inline-block';
+                document.getElementById('adminControls').style.display = 'flex';
+            }
 
-    const sidebarBtn = document.createElement("div");
-    sidebarBtn.className = "sidebar-category";
-    sidebarBtn.innerHTML = `${cat.emoji} ${cat.label}`;
-    sidebarBtn.dataset.category = cat.name;
-    if (cat.name === currentCategory) sidebarBtn.classList.add("active");
-    sidebarBtn.addEventListener("click", () => {
-      filterByCategory(cat.name);
-      closeSidebar();
-    });
-    sidebarCategoriesEl.appendChild(sidebarBtn);
-  });
-}
+            loadUserData();
+            loadRecipes();
+            renderCategories();
+            populateAddRecipeCategories();
+            performSearch();
+            renderSearchHistory();
+            updateAdminStats();
+        }
 
-// Sidebar
-function openSidebar() {
-  document.getElementById("sidebarMenu").classList.add("active");
-  document.getElementById("sidebarOverlay").classList.add("active");
-}
+        function updateAdminStats() {
+            if (currentUser.isAdmin || currentUser.email === ADMIN_EMAIL) {
+                document.getElementById('totalRecipes').textContent = allRecipes.length;
+                document.getElementById('userRecipes').textContent = allRecipes.filter(r => r.addedBy !== 'system').length;
+                document.getElementById('systemRecipes').textContent = allRecipes.filter(r => r.addedBy === 'system').length;
+            }
+        }
 
-function closeSidebar() {
-  document.getElementById("sidebarMenu").classList.remove("active");
-  document.getElementById("sidebarOverlay").classList.remove("active");
-}
+        function renderCategories() {
+            elements.categoriesContainer.innerHTML = '';
+            const sidebarCategoriesEl = document.getElementById('sidebarCategories');
+            sidebarCategoriesEl.innerHTML = '';
+            
+            categories.forEach(cat => {
+                const btn = document.createElement('button');
+                btn.className = 'category-btn';
+                btn.innerHTML = `${cat.emoji} ${cat.label}`;
+                btn.dataset.category = cat.name;
+                if (cat.name === currentCategory) {
+                    btn.classList.add('active');
+                }
+                btn.addEventListener('click', () => filterByCategory(cat.name));
+                elements.categoriesContainer.appendChild(btn);
 
-// Populate Add Recipe Categories
-function populateAddRecipeCategories() {
-  elements.newRecipeCategory.innerHTML = '<option value="">Select Category</option>';
-  categories.forEach(cat => {
-    if (cat.name !== "all") {
-      const option = document.createElement("option");
-      option.value = cat.label;
-      option.textContent = cat.label;
-      elements.newRecipeCategory.appendChild(option);
-    }
-  });
-}
+                const sidebarBtn = document.createElement('div');
+                sidebarBtn.className = 'sidebar-category';
+                sidebarBtn.innerHTML = `${cat.emoji} ${cat.label}`;
+                sidebarBtn.dataset.category = cat.name;
+                if (cat.name === currentCategory) {
+                    sidebarBtn.classList.add('active');
+                }
+                sidebarBtn.addEventListener('click', () => {
+                    filterByCategory(cat.name);
+                    closeSidebar();
+                });
+                sidebarCategoriesEl.appendChild(sidebarBtn);
+            });
+        }
 
-// Render Recipes
-function renderRecipes(recipes) {
-  elements.recipesGrid.innerHTML = "";
-  if (recipes.length === 0) {
-    elements.noRecipes.style.display = "block";
-    elements.recipesGrid.style.display = "none";
-  } else {
-    elements.noRecipes.style.display = "none";
-    elements.recipesGrid.style.display = "grid";
+        function openSidebar() {
+            document.getElementById('sidebarMenu').classList.add('active');
+            document.getElementById('sidebarOverlay').classList.add('active');
+        }
 
-    recipes.forEach(recipe => {
-      const card = document.createElement("div");
-      card.className = "recipe-card";
-      card.dataset.id = recipe.id;
+        function closeSidebar() {
+            document.getElementById('sidebarMenu').classList.remove('active');
+            document.getElementById('sidebarOverlay').classList.remove('active');
+        }
 
-      const isAdmin = currentUser.isAdmin || currentUser.email === ADMIN_EMAIL;
-      const canDelete = recipe.addedBy === currentUser.email || isAdmin;
+        function populateAddRecipeCategories() {
+            elements.newRecipeCategory.innerHTML = '<option value="">Select Category</option>';
+            categories.forEach(cat => {
+                if(cat.name !== 'all') {
+                    const option = document.createElement('option');
+                    option.value = cat.label;
+                    option.textContent = cat.label;
+                    elements.newRecipeCategory.appendChild(option);
+                }
+            });
+        }
 
-      card.innerHTML = `
-        ${canDelete ? `<button class="delete-btn" onclick="deleteRecipe('${recipe.id}', event)">🗑️ Delete</button>` : ''}
-        <img src="${recipe.image}" alt="${recipe.name}" class="recipe-image" onclick="showRecipeModal('${recipe.id}')">
-        <div class="recipe-info">
-          <h3 class="recipe-title" onclick="showRecipeModal('${recipe.id}')">${recipe.name}</h3>
-          <div class="recipe-meta">
-            <span class="recipe-category">${recipe.category}</span>
-            <span class="recipe-time">⏱️ ${recipe.time}</span>
-          </div>
-        </div>
-      `;
+        function renderRecipes(recipes) {
+            elements.recipesGrid.innerHTML = '';
+            if (recipes.length === 0) {
+                elements.noRecipes.style.display = 'block';
+                elements.recipesGrid.style.display = 'none';
+            } else {
+                elements.noRecipes.style.display = 'none';
+                elements.recipesGrid.style.display = 'grid';
+                recipes.forEach(recipe => {
+                    const card = document.createElement('div');
+                    card.className = 'recipe-card';
+                    card.dataset.id = recipe.id;
+                    
+                    const isAdmin = currentUser.isAdmin || currentUser.email === ADMIN_EMAIL;
+                    const canDelete = recipe.addedBy === currentUser.email || isAdmin;
+                    
+                    card.innerHTML = `
+                        ${canDelete ? '<button class="delete-btn" onclick="deleteRecipe(\'' + recipe.id + '\', event)">Delete</button>' : ''}
+                        <img src="${recipe.image}" alt="${recipe.name}" class="recipe-image" onclick="showRecipeModal('${recipe.id}')">
+                        <div class="recipe-info">
+                            <h3 class="recipe-title" onclick="showRecipeModal('${recipe.id}')">${recipe.name}</h3>
+                            <div class="recipe-meta">
+                                <span class="recipe-category">${recipe.category}</span>
+                                <span class="recipe-time">⏱️ ${recipe.time}</span>
+                            </div>
+                        </div>
+                    `;
+                    elements.recipesGrid.appendChild(card);
+                });
+            }
+            updateAdminStats();
+        }
 
-      elements.recipesGrid.appendChild(card);
-    });
-  }
-  updateAdminStats();
-}
+        window.deleteRecipe = function(recipeId, event) {
+            event.stopPropagation();
+            if (confirm('Are you sure you want to delete this recipe?')) {
+                allRecipes = allRecipes.filter(r => r.id !== recipeId);
+                
+                const data = loadAllData();
+                data.recipes = data.recipes.filter(r => r.id !== recipeId);
+                localStorage.setItem('recipeMasterRecipes', JSON.stringify(data.recipes));
+                
+                performSearch();
+                updateAdminStats();
+            }
+        };
 
-// ✅ FIXED: Delete Recipe Permanently
-window.deleteRecipe = function(recipeId, event) {
-  event.stopPropagation();
-  if (confirm("Are you sure you want to delete this recipe?")) {
-    allRecipes = allRecipes.filter(r => r.id !== recipeId);
-    saveRecipes(); // ✅ Save to localStorage
-    performSearch();
-    console.log('🗑️ Recipe deleted:', recipeId);
-  }
-};
+        window.showRecipeModal = function(recipeId) {
+            const recipe = allRecipes.find(r => r.id === recipeId);
+            if (!recipe) return;
 
-// Show Recipe Modal
-window.showRecipeModal = function(recipeId) {
-  const recipe = allRecipes.find(r => r.id === recipeId);
-  if (!recipe) return;
+            elements.modalImage.src = recipe.image;
+            elements.modalTitle.textContent = recipe.name;
+            elements.modalCategory.textContent = recipe.category;
+            elements.modalTime.textContent = recipe.time;
 
-  elements.modalImage.src = recipe.image;
-  elements.modalTitle.textContent = recipe.name;
-  elements.modalCategory.textContent = recipe.category;
-  elements.modalTime.textContent = recipe.time;
+            elements.modalIngredients.innerHTML = '';
+            recipe.ingredients.forEach(ing => {
+                const li = document.createElement('li');
+                li.textContent = ing;
+                elements.modalIngredients.appendChild(li);
+            });
 
-  elements.modalIngredients.innerHTML = "";
-  recipe.ingredients.forEach(ing => {
-    const li = document.createElement("li");
-    li.textContent = ing;
-    elements.modalIngredients.appendChild(li);
-  });
+            elements.modalInstructions.innerHTML = '';
+            recipe.instructions.forEach(step => {
+                const li = document.createElement('li');
+                li.textContent = step;
+                elements.modalInstructions.appendChild(li);
+            });
 
-  elements.modalInstructions.innerHTML = "";
-  recipe.instructions.forEach(step => {
-    const li = document.createElement("li");
-    li.textContent = step;
-    elements.modalInstructions.appendChild(li);
-  });
+            elements.recipeModal.classList.add('active');
+        };
 
-  elements.recipeModal.classList.add("active");
-};
+        function closeAllModals() {
+            elements.recipeModal.classList.remove('active');
+            elements.addRecipeModal.classList.remove('active');
+        }
 
-// Close Modals
-function closeAllModals() {
-  elements.recipeModal.classList.remove("active");
-  elements.addRecipeModal.classList.remove("active");
-}
+        function showAddRecipeModal() {
+            elements.addRecipeForm.reset();
+            elements.addRecipeModal.classList.add('active');
+        }
 
-// Show Add Recipe Modal
-function showAddRecipeModal() {
-  elements.addRecipeForm.reset();
-  elements.addRecipeModal.classList.add("active");
-}
+        function handleAddRecipe(e) {
+            e.preventDefault();
+            
+            const newRecipe = {
+                id: 'user-' + Date.now(),
+                name: document.getElementById('newRecipeName').value,
+                category: document.getElementById('newRecipeCategory').value,
+                image: document.getElementById('newRecipeImage').value,
+                time: document.getElementById('newRecipeTime').value,
+                ingredients: document.getElementById('newRecipeIngredients').value.split('\n').filter(Boolean),
+                instructions: document.getElementById('newRecipeInstructions').value.split('\n').filter(Boolean),
+                addedBy: currentUser.email
+            };
 
-// ✅ FIXED: Add Recipe Permanently
-function handleAddRecipe(e) {
-  e.preventDefault();
+            allRecipes.unshift(newRecipe);
+            saveRecipes();
+            performSearch();
+            closeAllModals();
+        }
 
-  const newRecipe = {
-    id: "user-" + Date.now(),
-    name: document.getElementById("newRecipeName").value,
-    category: document.getElementById("newRecipeCategory").value,
-    image: document.getElementById("newRecipeImage").value,
-    time: document.getElementById("newRecipeTime").value,
-    ingredients: document.getElementById("newRecipeIngredients").value.split("\n").filter(Boolean),
-    instructions: document.getElementById("newRecipeInstructions").value.split("\n").filter(Boolean),
-    addedBy: currentUser.email
-  };
+        function performSearch() {
+            const searchTerm = elements.searchInput.value.toLowerCase();
+            
+            filteredRecipes = allRecipes.filter(recipe => {
+                const nameMatch = recipe.name.toLowerCase().includes(searchTerm);
+                const categoryMatch = recipe.category.toLowerCase().includes(searchTerm);
+                const ingredientMatch = recipe.ingredients.some(ing => ing.toLowerCase().includes(searchTerm));
+                
+                const categoryFilterMatch = (currentCategory === 'all' || recipe.category === currentCategory);
 
-  allRecipes.unshift(newRecipe);
-  saveRecipes(); // ✅ Save to localStorage
-  performSearch();
-  closeAllModals();
-  console.log('➕ Recipe added:', newRecipe.name);
-}
+                return (nameMatch || categoryMatch || ingredientMatch) && categoryFilterMatch;
+            });
 
-// Search
-function performSearch() {
-  const searchTerm = elements.searchInput.value.toLowerCase();
+            renderRecipes(filteredRecipes);
 
-  filteredRecipes = allRecipes.filter(recipe => {
-    const nameMatch = recipe.name.toLowerCase().includes(searchTerm);
-    const categoryMatch = recipe.category.toLowerCase().includes(searchTerm);
-    const ingredientMatch = recipe.ingredients.some(ing => ing.toLowerCase().includes(searchTerm));
-    const categoryFilterMatch = currentCategory === "all" || recipe.category === currentCategory;
+            if (searchTerm) {
+                updateSearchHistory(searchTerm);
+            }
+        }
 
-    return (nameMatch || categoryMatch || ingredientMatch) && categoryFilterMatch;
-  });
+        function updateSearchHistory(term) {
+            if (!currentUser.searchHistory) {
+                currentUser.searchHistory = [];
+            }
+            currentUser.searchHistory = currentUser.searchHistory.filter(item => item !== term);
+            currentUser.searchHistory.unshift(term);
+            if (currentUser.searchHistory.length > 5) {
+                currentUser.searchHistory = currentUser.searchHistory.slice(0, 5);
+            }
+            saveData();
+            renderSearchHistory();
+        }
 
-  renderRecipes(filteredRecipes);
+        function renderSearchHistory() {
+            if (!currentUser.searchHistory || currentUser.searchHistory.length === 0) {
+                elements.searchHistory.style.display = 'none';
+            } else {
+                elements.searchHistory.style.display = 'block';
+                elements.historyItems.innerHTML = '';
+                currentUser.searchHistory.forEach(term => {
+                    const item = document.createElement('span');
+                    item.className = 'history-item';
+                    item.textContent = term;
+                    item.addEventListener('click', () => {
+                        elements.searchInput.value = term;
+                        performSearch();
+                    });
+                    elements.historyItems.appendChild(item);
+                });
+            }
+        }
 
-  if (searchTerm) {
-    updateSearchHistory(searchTerm);
-    saveTracking('SEARCH', { query: searchTerm });
-  }
-}
+        function filterByCategory(categoryName) {
+            currentCategory = categoryName;
+            
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.category === categoryName);
+            });
 
-// Search History
-function updateSearchHistory(term) {
-  if (!currentUser.searchHistory) currentUser.searchHistory = [];
-  currentUser.searchHistory = currentUser.searchHistory.filter(item => item !== term);
-  currentUser.searchHistory.unshift(term);
-  if (currentUser.searchHistory.length > 5) currentUser.searchHistory = currentUser.searchHistory.slice(0, 5);
-  saveUserData();
-  renderSearchHistory();
-}
+            performSearch();
+        }
 
-function renderSearchHistory() {
-  if (!currentUser.searchHistory || currentUser.searchHistory.length === 0) {
-    elements.searchHistory.style.display = "none";
-  } else {
-    elements.searchHistory.style.display = "block";
-    elements.historyItems.innerHTML = "";
-    currentUser.searchHistory.forEach(term => {
-      const item = document.createElement("span");
-      item.className = "history-item";
-      item.textContent = term;
-      item.addEventListener("click", () => {
-        elements.searchInput.value = term;
-        performSearch();
-      });
-      elements.historyItems.appendChild(item);
-    });
-  }
-}
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                elements.splashScreen.style.display = 'none';
+                
+                const data = loadAllData();
+                const savedEmail = localStorage.getItem('recipeMasterCurrentUser');
+                
+                if (savedEmail && data.users[savedEmail]) {
+                    currentUser = data.users[savedEmail];
+                    initApp();
+                } else {
+                    elements.loginPage.style.display = 'flex';
+                }
+            }, 4000);
+            
+            elements.loginForm.addEventListener('submit', handleLogin);
+            elements.signupForm.addEventListener('submit', handleSignup);
+            elements.logoutBtn.addEventListener('click', logout);
+            elements.showSignupLink.addEventListener('click', () => {
+                elements.loginPage.style.display = 'none';
+                elements.signupPage.style.display = 'flex';
+            });
+            elements.showLoginLink.addEventListener('click', () => {
+                elements.signupPage.style.display = 'none';
+                elements.loginPage.style.display = 'flex';
+            });
 
-// Filter by Category
-function filterByCategory(categoryName) {
-  currentCategory = categoryName;
-  document.querySelectorAll(".category-btn").forEach(btn => {
-    btn.classList.toggle("active", btn.dataset.category === categoryName);
-  });
-  performSearch();
-}
+            elements.searchBtn.addEventListener('click', performSearch);
+            elements.searchInput.addEventListener('keyup', (e) => {
+                if (e.key === 'Enter') {
+                    performSearch();
+                }
+            });
 
-// Error Messages
-function showLoginError(message) {
-  elements.loginError.textContent = message;
-  elements.loginError.style.display = "block";
-}
+            document.getElementById('hamburgerMenu').addEventListener('click', openSidebar);
+            document.getElementById('sidebarOverlay').addEventListener('click', closeSidebar);
 
-function showSignupError(message) {
-  elements.signupError.textContent = message;
-  elements.signupError.style.display = "block";
-}
+            elements.addRecipeBtn.addEventListener('click', showAddRecipeModal);
+            elements.addRecipeForm.addEventListener('submit', handleAddRecipe);
+            
+            elements.closeRecipeModal.addEventListener('click', closeAllModals);
+            elements.closeAddModal.addEventListener('click', closeAllModals);
 
-function showSignupSuccess(message) {
-  elements.signupSuccess.textContent = message;
-  elements.signupSuccess.style.display = "block";
-}
-
-// Initialize
-document.addEventListener("DOMContentLoaded", () => {
-  setTimeout(() => {
-    elements.splashScreen.style.display = "none";
-    const data = loadAllData();
-    const savedEmail = localStorage.getItem("recipeMasterCurrentUser");
-    if (savedEmail && data.users[savedEmail]) {
-      currentUser = data.users[savedEmail];
-      initApp();
-    } else {
-      elements.loginPage.style.display = "flex";
-    }
-  }, 4000);
-
-  // Event Listeners
-  elements.loginForm.addEventListener("submit", handleLogin);
-  elements.signupForm.addEventListener("submit", handleSignup);
-  elements.logoutBtn.addEventListener("click", logout);
-  elements.showSignupLink.addEventListener("click", () => {
-    elements.loginPage.style.display = "none";
-    elements.signupPage.style.display = "flex";
-  });
-  elements.showLoginLink.addEventListener("click", () => {
-    elements.signupPage.style.display = "none";
-    elements.loginPage.style.display = "flex";
-  });
-
-  elements.searchBtn.addEventListener("click", performSearch);
-  elements.searchInput.addEventListener("keyup", (e) => {
-    if (e.key === "Enter") performSearch();
-  });
-
-  document.getElementById("hamburgerMenu").addEventListener("click", openSidebar);
-  document.getElementById("sidebarOverlay").addEventListener("click", closeSidebar);
-
-  elements.addRecipeBtn.addEventListener("click", showAddRecipeModal);
-  elements.addRecipeForm.addEventListener("submit", handleAddRecipe);
-  elements.closeRecipeModal.addEventListener("click", closeAllModals);
-  elements.closeAddModal.addEventListener("click", closeAllModals);
-
-  window.addEventListener("click", (e) => {
-    if (e.target === elements.recipeModal || e.target === elements.addRecipeModal) {
-      closeAllModals();
-    }
-  });
-});
+            window.addEventListener('click', (e) => {
+                if (e.target === elements.recipeModal || e.target === elements.addRecipeModal) {
+                    closeAllModals();
+                }
+            });
+        });
+   
