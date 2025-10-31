@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Master - Your Cooking Companion</title>
+    <link rel="stylesheet" href="style.css">
+   
+</head>
+<body>
+    <div class="splash-screen" id="splashScreen">
+        <div class="splash-content">
+            <h1>🍳 Recipe Master</h1>
+            <p>Made with ❤️ by Rehan</p>
+        </div>
+    </div>
+
+    <div id="loginPage" class="auth-page" style="display: none;">
+        <div class="auth-container">
+            <div class="auth-header">
+                <h1>🍳 Recipe Hub</h1>
+                <p>Welcome back! Please login to continue</p>
+            </div>
+            <div id="loginError" class="error-msg"></div>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="loginEmail" required placeholder="Enter your email">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="loginPassword" required placeholder="Enter your password">
+                </div>
+                <button type="submit" class="auth-btn">Login</button>
+                <div class="auth-link">
+                    Don't have an account? <a id="showSignupLink">Sign Up</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="signupPage" class="auth-page" style="display: none;">
+        <div class="auth-container">
+            <div class="auth-header">
+                <h1>🍳 Recipe Master</h1>
+                <p>Create your account to get started</p>
+            </div>
+            <div id="signupError" class="error-msg"></div>
+            <div id="signupSuccess" class="success-msg"></div>
+            <form id="signupForm">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="signupName" required placeholder="Enter your name">
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="signupEmail" required placeholder="Enter your email">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="signupPassword" required placeholder="Create a password (min 6 characters)">
+                </div>
+                <button type="submit" class="auth-btn">Sign Up</button>
+                <div class="auth-link">
+                    Already have an account? <a id="showLoginLink">Login</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="mainApp" class="app-container">
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+        <div class="sidebar-menu" id="sidebarMenu">
+            <div class="sidebar-header">
+                <h2>🍳 Recipe Master</h2>
+                <p>Explore delicious recipes</p>
+            </div>
+            <div class="sidebar-categories" id="sidebarCategories"></div>
+        </div>
+        
+        <nav class="navbar">
+            <div class="navbar-left">
+                <button class="hamburger-menu" id="hamburgerMenu">☰</button>
+                <div class="navbar-brand">Recipe Master</div>
+            </div>
+            <div class="navbar-right">
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar"></div>
+                    <span class="user-name" id="userName"></span>
+                    <span class="admin-badge" id="adminBadge" style="display: none;">👑 ADMIN</span>
+                </div>
+                <button class="logout-btn" id="logoutBtn">Logout</button>
+            </div>
+        </nav>
+
+        <div class="container">
+            <div class="admin-controls" id="adminControls" style="display: none;">
+                <h3>👑 Admin Dashboard</h3>
+                <div class="admin-stats">
+                    <span>Total Recipes: <span id="totalRecipes">0</span></span>
+                    <span>User Recipes: <span id="userRecipes">0</span></span>
+                    <span>System Recipes: <span id="systemRecipes">0</span></span>
+                </div>
+            </div>
+
+            <div class="search-container">
+                <div class="search-box">
+                    <input type="text" class="search-input" id="searchInput" placeholder="Search recipes by name, category, or ingredient...">
+                    <button class="search-btn" id="searchBtn">🔍 Search</button>
+                </div>
+                
+                <div class="categories-wrapper">
+                    <div class="categories" id="categories"></div>
+                </div>
+
+                <div class="search-history" id="searchHistory" style="display: none;">
+                    <h4>Recent Searches:</h4>
+                    <div class="history-items" id="historyItems"></div>
+                </div>
+            </div>
+
+            <div class="recipes-grid" id="recipesGrid"></div>
+            <div class="no-recipes" id="noRecipes" style="display: none;">
+                No recipes found. Try a different search!
+            </div>
+        </div>
+
+        <button class="add-recipe-btn" id="addRecipeBtn" title="Add Your Recipe">+</button>
+    </div>
+
+    <div id="recipeModal" class="modal">
+        <div class="modal-content">
+            <img id="modalImage" class="modal-image" src="" alt="">
+            <button class="close-btn" id="closeRecipeModal">×</button>
+            <div class="modal-header">
+                <h2 id="modalTitle"></h2>
+                <p id="modalCategory"></p>
+            </div>
+            <div class="modal-body">
+                <div class="detail-section">
+                    <h3>⏱️ Cooking Time</h3>
+                    <p id="modalTime"></p>
+                </div>
+                <div class="detail-section">
+                    <h3>🛒 Ingredients</h3>
+                    <ul class="ingredients-list" id="modalIngredients"></ul>
+                </div>
+                <div class="detail-section">
+                    <h3>👨‍🍳 Instructions</h3>
+                    <ol class="instructions-list" id="modalInstructions"></ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="addRecipeModal" class="modal">
+        <div class="modal-content">
+            <button class="close-btn" id="closeAddModal">×</button>
+            <div class="modal-header">
+                <h2>Add Your Own Recipe</h2>
+            </div>
+            <div class="modal-body">
+                <form id="addRecipeForm">
+                    <div class="form-group">
+                        <label>Recipe Name*</label>
+                        <input type="text" id="newRecipeName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Category*</label>
+                        <select id="newRecipeCategory" required>
+                            <option value="">Select Category</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Image URL*</label>
+                        <input type="url" id="newRecipeImage" placeholder="https://example.com/image.jpg" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Cooking Time*</label>
+                        <input type="text" id="newRecipeTime" placeholder="e.g., 30 minutes" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Ingredients* (one per line)</label>
+                        <textarea id="newRecipeIngredients" rows="5" required placeholder="500g Spaghetti&#10;4 Eggs&#10;200g Bacon"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Instructions* (one step per line)</label>
+                        <textarea id="newRecipeInstructions" rows="6" required placeholder="Boil water in a large pot&#10;Add spaghetti and cook for 10 minutes&#10;Drain the pasta"></textarea>
+                    </div>
+                    <button type="submit" class="auth-btn">Add Recipe</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+   <script src="script.js"></script>
+</body>
+</html>
